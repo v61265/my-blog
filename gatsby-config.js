@@ -8,7 +8,7 @@ module.exports = {
   siteMetadata: {
     siteTitleAlt: `坑坑洞洞`,
   },
-  pathPrefix: "/blog",
+  pathPrefix: "/my-blog",
   plugins: [
     {
       resolve: `@lekoarts/gatsby-theme-minimal-blog`,
@@ -16,7 +16,7 @@ module.exports = {
       options: {
         navigation: [
           {
-            title: `Blog`,
+            title: `Achieves`,
             slug: `/blog`,
           },
           {
@@ -51,7 +51,7 @@ module.exports = {
         display: `standalone`,
         icons: [
           {
-            src: `./icon.png`,
+            src: `./icon-192.png`,
             sizes: `192x192`,
             type: `image/png`,
           },
