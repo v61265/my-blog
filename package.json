@@ -14,7 +14,8 @@
     "start": "gatsby develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "deploy": "gatsby build --prefix-paths && gh-pages -d public -b master -r https://$GH_TOKEN@github.com/v61265/my-blog"
+    "deploy": "gatsby build --prefix-paths && gh-pages -d public -b master -r https://$GH_TOKEN@github.com/v61265/my-blog",
+    "deploy:github": "npm run build && node ./deploy-github"
   },
   "dependencies": {
     "@lekoarts/gatsby-theme-minimal-blog": "^2.7.3",
