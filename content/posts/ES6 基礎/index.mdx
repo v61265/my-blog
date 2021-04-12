@@ -1,0 +1,296 @@
+---
+title: "JavaScript ES6 基礎"
+date: 2020-07-09
+slug: "/JavaScript-es6"
+canonicalUrl: "https://random-blog-about-curses.com"
+tags:
+  - 程式導師計劃
+  - coding 筆記
+  - JavaScript
+---
+
+### 什麼是 ES6
+
+ES6 是指 ECMAScript 第六版，於 2015 年發布，因此又稱 ES2015 。
+`ECMAScript` 是一套程式碼的標準和規範， Javascript 就是依據此實作的，因此可直接使用於 JavaScipt 。
+
+### let & const
+
+定義變數時，除了在前面加 `var` 以外，也可以使用 `let` 和 `const` 。
+
+#### 差異一：重複宣告
+
+`const` 用於宣告 `常數` ，因此一旦宣告該常數的內容便無法更動。  
+相對的， `let` 和 `ver` 就可以改變。
+
+```js
+const PI = 3.14;
+let a = 123;
+PI = 3.1415926; //會出錯
+a = 456; //沒有問題
+```
+
+此處的重複宣告是指不能改變 `記憶體位置`，因此上方例子中的數字無法被改變。但若改變物件內容不會影響到記憶體位置，因此沒有問題。
+
+#### 差異二：作用域
+
+作用域 (scope) 指的是變數的生存範圍。當你輸入 `console.log(a)` 時， JavaScript 會往上找是否有宣告過 a ，並回傳該處宣告的值。例如：
+
+```js
+function hello() {
+  var a = 123;
+  console.log(a); //123
+}
+
+console.log(a); //undefined，因為 function 在不同層， a 的作用域無法到此。
+```
+
+`var` 的作用域在函數內（若不是在函數內，就是整個文件內），但可能會產生變數範圍太大互相干擾出錯的狀況，例如：
+
+```js
+for (var i = 0; i < 5; i++) {
+  console.log("*");
+}
+console.log(i); //5
+```
+
+因此 `let` 和 `const` 的範圍縮小到一個 block 中（ `{` 和 `}` 包起來處），可以避免很多問題。
+
+### Template Literals
+
+Template 是樣板的意思。Template Literals 用於字串拼接，不用再只用 `+` 和 `,` ，而是用 ` `` ` 框出文字。這種方法可用於多行字串拼接：
+
+```js
+let a = `hi
+abc
+www`;
+
+console.log(a);
+//hi
+//abc
+//www
+```
+
+也可在其中使用 `${變數}` 。例如：
+
+```js
+let name = you;
+let hi = "hi, ${you}";
+
+console.log(hi); // 'hi, you'
+```
+
+### Destructuring
+
+提取陣列中的值時，最傳統的做法如下：
+
+```js
+const arr = [1, 2, 3];
+let one = arr[0];
+let two = arr[1];
+let three = arr[2];
+```
+
+也可以使用 Destructuring 的寫法：
+
+```js
+const arr = [1, 2, 3, 4];
+let [one, two, three] = arr;
+console.log(two); //2
+```
+
+同樣的也可以用在物件中：
+
+```js
+const obj = {
+  a: 1,
+  b: 2,
+  c: 3,
+};
+// let {key} = obj ，就是 let obj.key = value
+let { a, b, c } = obj;
+console.log(b); //2
+```
+
+知道規則之後，當然可以花式解構物件：
+
+```js
+const obj = {
+  a : {
+    b : 'c'
+  }
+}
+
+let {a{b}} = obj
+console.log(b) //c
+```
+
+當然也可以和函數合併
+
+```js
+function des({ a, b }) {
+  console.log(a);
+}
+
+des({ a: 1, b: 2 }); //1
+```
+
+### Spread Operator
+
+展開運算子的寫法是在陣列或物件的名稱前方加上 `...` ，以下為基本範例：
+
+```js
+let arr1 = [1, 2, 3]
+let arr2 = [4, arr1] // [4, [1, 2, 3]]
+let arr3 = [4, ..arr] // [4, 1, 2, 3]
+```
+
+因為展開運算子就是把陣列展開，因此也可以和函式合併使用，例如：
+
+```js
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+let arr = [1, 2, 3];
+console.log(sum(...arr)); // 6
+```
+
+當然要展開物件也可以：
+
+```js
+let obj1 = { a: 1, b: 2, c: 3 };
+let obj2 = { ...obj1, d: 4 };
+
+console.log(obj2); // {a:1, b:2, c:3, d:4}
+```
+
+展開運算子也可以用於複製陣列和物件，但和直接指定不同，差別如下：
+
+```js
+let arr1 = [1, 2, 3];
+let arr2 = arr1; // [1, 2, 3]
+let arr3 = [...arr1]; // [1, 2, 3]
+
+console.log(arr1 === arr2); // true，指向同個記憶體位置
+console.log(arr1 === arr3); // fales ，因為記憶體位置不同
+```
+
+### Rest Parameters
+
+反向展開可以用於解構時，將剩餘的東西放進另一個陣列。例如：
+
+```js
+let arr = [1, 2, 3, 4]
+let [first, ...rest] = arr
+console.log(rest) // [2, 3, 4]
+let [one, ...test, 4] = arr // 會出現錯誤，因為只能至於最後。
+```
+
+當然也可以和函式合併使用：
+
+```js
+function test(...number) {
+  return number;
+}
+
+console.log(test(1, 2, 3)); // [1, 2, 3]
+```
+
+### default Parameters
+
+預設值可於函式或解構中使用，當沒輸入時，則會自動帶入該值。例如：
+
+```js
+function test(a = 2, b) {
+  return [a, b];
+}
+
+console.log(test()); // [2, undefined]
+
+let arr = [1, 2, 3];
+let [a, b, c, d = 7] = arr;
+console.log(a, b, c, d); // 1 2 3 7
+```
+
+### Arrow Function
+
+箭頭函式簡化程式碼，提高可讀性。例如：
+
+```js
+var sum = function (a, b) {
+  return a + b;
+};
+
+//改成
+
+let sum = (a, b) => {
+  return a + b;
+};
+
+//還可以簡化
+
+let sum = (a, b) => {
+  return a + b;
+};
+
+//把大括號拿掉
+
+let sum = (a, b) => a + b;
+
+//只有一個參數時可以不用加括號，但若沒有參數則一定要括號。
+```
+
+### Import & Export
+
+和 require 以及 export 一樣， import 和 export 可以讓我們跨檔案提取函式和變數。但因為功能比較新，需要依靠 babel 。最簡單的寫法如下：
+
+```js
+export function add(a, b) {
+  return a + b;
+}
+
+//另一個檔案//
+
+import { add } from "文件名稱";
+```
+
+如果想要 import 文件裡所有變數，可直接使用：
+
+```js
+import * as (新名稱) from '文件名稱'
+//取用時
+(新名稱).(變數名稱)()
+```
+
+當然也可以用預設值：
+
+```js
+export default function add(a, b) {
+  return a + b;
+}
+
+//另一個檔案//
+
+import add from "文件名稱";
+
+// 其實就是
+
+import { default } from "文件名稱";
+```
+
+### Babel
+
+Babel 是一個 JavaScript 的翻譯器，目的是將比較新的語法轉換為舊的，讓你隨時跟上潮流。
+首先要安裝 Babel ：
+
+```js
+npm install babel-loader @babel/core @babel/preset-env --save-dev
+```
+
+### 更多 ES6 語法
+
+https://github.com/DrkSephy/es6-cheatsheet
+
+**參考資料：**
+[JavaScript - ES6 語法、Babel 轉譯器](https://hackmd.io/D86KGcHVSpaRuN0cDesudw)
