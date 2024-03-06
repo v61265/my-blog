@@ -88,7 +88,7 @@ function add(a, b) {
 console.log(add(2, 3)); // 5
 ```
 
-上面例子中， a 和 b 就是函式的 `參數` ，而 2 和 3 則是 `引數`。可以在函式中使用 `console.log(arguments)` 查看引數。引數會以物件形式出現，例如{'0': 2, '1': 3}。
+上面例子中， a 和 b 就是函式的 `參數` ，而 2 和 3 則是 `引數`。可以在函式中使用 `console.log(arguments)` 查看引數。引數會以物件形式出現，例如 `{"0": 2, "1": 3}`。
 
 #### 函式的特性
 
@@ -128,7 +128,7 @@ console.log(n); // 10
 | Math.round(num)       | 四捨五入法                                   | `var round = Math.round(10.1)` //10                    |
 | Math.sqrt(num)        | 開根號                                       | `var sqrt = Math.sqrt(144)` //12                       |
 | Math.pow(num, times)  | num 的 times 次方                            | `var pow = Math.pow(3, 3)` //27                        |
-| Math.random()         | 隨機生產 0 <= n < 1                          | `var pow = Math.random()` //0.84                       |
+| Math.random()         | 隨機生產從 0 到 1 的數字（包含 0 但不含 1）  | `var pow = Math.random()` //0.84                       |
 
 以上常數皆用大寫表示。
 數字轉字串有兩種做法：
@@ -245,7 +245,7 @@ var b = [22, 18, 9];
 b.sort(); //[18, 22, 9]
 ```
 
-上面數字的排序只是看最前面的數字，要真正幫數字排序可使用函數。概念為若回傳值 <= 0 不調換，但若 > 0 則互換。詳細可參考[MDN](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)因此若要由小排到大，可用：
+上面數字的排序只是看最前面的數字，要真正幫數字排序可使用函數。概念為若回傳值小於等於 0 不調換，但若 > 0 則互換。詳細可參考[MDN](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)因此若要由小排到大，可用：
 
 ```js
 b.sort(function (a, b) {
