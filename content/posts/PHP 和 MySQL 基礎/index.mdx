@@ -1,0 +1,284 @@
+---
+title: 'PHP 和 MySQL 基礎'
+date: 2020-08-31
+slug: '/php-mysql-base'
+canonicalUrl: 'https://v61265.github.io/myBlog'
+tags:
+  - 程式導師計劃
+  - coding 筆記
+  - Back-End
+---
+
+# 前言
+
+第一次學 PHP 和 MySQL ，本篇會簡單記錄觀念，最主要會實作如何使用 PHP 和 MySQL 連線的基礎，也就是 CURD（Create、Read、Update 和 Delete）。既是給初學者看，也方便自己之後回頭參考。
+
+# MySQL
+
+## MySQL 是什麼？
+
+MySQL 是一種關聯式資料庫。
+一般來說網頁的資料會被存在一個檔案中，但當網頁一大就難管理，而資料庫系統就是專門處理資料的程式，提供專門的語法操作資料庫。
+
+### 關聯式資料庫
+
+- 儲存格式為 table （像是表格那樣）
+- table 之間互相關聯（例如 id 都一樣）
+- 結構穩定，但相對彈性低
+- 常見如 MySQL、PostgreSQL、Microsoft SQL Server、SQLite
+
+### 非關聯式資料庫
+
+- 又叫 NoSQL
+- 用不同型態儲存，因此資料可放的型態也更多元（例如陣列）
+- 結構較不明顯，因此彈性更高
+- 常見如 mongodb。
+
+## phpmyadmin
+
+本文使用的系統 MariaDB 是 MySQL 的分支，我們可以選擇使用 CLI 和資料庫溝通，也可以用 GUI 例如 phpmyadmin 。
+
+## 基礎語法
+
+因為有人覺得比較好分辨，以下基礎語法都是大寫，但實際執行時小寫也可以。 table name 的反引號也可以省略。
+
+### Insert 新增資料
+
+```
+INSERT INTO `<table name>` ('<key1>', '<key2>') VALUES('value1', 'value2');
+```
+
+### Update 修改資料
+
+```
+UPDATE `<table name>` SET 'key1'='value1', 'key1'='value1' WHERE 條件
+```
+
+要是沒設定條件，會直接影響到全部。
+
+### Selector 查詢資料
+
+```
+SELECT key1, key2 FROM `<table name>` WHERE 條件;
+```
+
+- 可以直接用 `*` 選取符合條件的資料的所有欄位。
+- 若欄位填 `id as name` ，就是暫時將欄位名改名。
+- 條件可用 and 或 or 連接。
+
+### Delete
+
+```
+DELETE FROM `<table name>` WHERE 條件
+```
+
+但很多時候我們點選刪除並不是真的將資料刪除，而是將 is-delete 的攔位改成 true ，之後網站再只呈現沒被刪掉的就好了。
+
+# PHP 和資料庫連線
+
+## 觀念
+
+若網頁讀取 .css 檔案，順序是瀏覽器 request 丟給 Server 後， Server 直接將找到的檔案丟回給瀏覽器。但動態網頁不同， Server 收到瀏覽器的 Request 後，找到 .php 檔先執行完後，才將結果 response 給瀏覽器。不過根據 Server 設定部圖， .php 檔也有可能是靜態網頁，而其中差別在 Server 是否有執行。
+
+## GET 和 POST
+
+本文送出資料的方式是使用表單，也就是在 .php 中加入這段語法：
+
+```
+<form method='方法' action='存取目的'>
+```
+
+### GET
+
+- 用 GET 的方法送出時，會在後方網址加上 `query string` ，例如 `?key1=value1&key2=value2` 。所以也可以直接在 url 加上 query string 也能達成一樣的效果。
+- 輸入的資料會存進目標檔案的變數 `$_GET` 中 ，需要提取值時就用 `$_GET['key']` 。
+- 可以使用函式 `isset($_GET['key'])` 判斷是否有輸入值。
+
+### POST
+
+- 提交後網址不變，只移到目的地。
+- 可用 `$_POST['key']` 提取資料。
+- 就算沒輸入也會傳入空值，因此要用 `empty()` 來判斷是否有輸入值。
+- 同個檔案中可和 GET 混用，但一個表單只有一種 method 。
+
+## PHP 和資料庫連線
+
+```
+<?php
+
+    /* 基礎資料設定通常最後會隱藏起來，
+    可在 .gitignore 加入這個檔案*/
+    $server_name = 'localhost'; //伺服器名稱
+    $username = 'v61265'; //帳號
+    $password = 'v61265'; //密碼
+    $db_name = 'v61265'; //資料庫名稱
+
+    /* 四個參數依序放：伺服器名稱、帳號、密碼、資料庫名稱 */
+    $conn = new mysqli($server_name, $username, $password, $db_name);
+
+    /* 有問題就回傳錯誤資訊，
+    die() 顯示完後程式就不會繼續往下跑，
+    也可以 echo 完後 exit(); */
+    /* 存取物件屬性用 -> ，對應 JS 的 . */
+    if ($conn-> onnect_error) {
+        die('資料庫連線錯誤' . $conn->connect_error);
+    }
+
+    /* 設定檔案格式和時區 */
+    $conn->query('SET NAMES UTF8');
+    $conn->query('SET time_zone= "+8:00"');
+?>
+```
+
+這個檔案只會放連線資訊，其他檔案要用時要引入：
+
+```
+require_once('conn.php);
+```
+
+## CURD
+
+### Read 讀取資料
+
+步驟：
+
+1. 用 query 從資料庫拿取資料
+2. 檢查錯誤
+3. 拿出結果
+
+```
+<?php
+    /* 和資料庫連線 */
+    require_once('conn.php');
+
+    /* table 'user' 中的資料全部存到變數 $result */
+    $result = $conn->query("SELECT * FROM user");
+
+    /* 如果 $result 為假，回傳錯誤訊息 */
+    if (!$result) {
+        die($conn->error);
+    }
+
+    /* 先執行完 $row = $result->fetch_assoc() 才判斷真假，
+    全部拿完的話 $row 為 null ，即可跳脫迴圈。*/
+    while ($row = $result->fetch_assoc()) {
+        echo "id:" . $row['id'] . '<br>';
+        echo "username" . $row['users'] . '<br>';
+    }
+?>
+```
+
+`->fetch_assoc()` 可以拿到第一筆資料，第二次出現時可以拿到第二筆資料。此類推讓每個值都跑一次就可以顯示所有資料。
+
+## Create 新增資料
+
+```
+<?php
+    require_once('conn.php');
+
+    /* 如果沒有輸入就提示 */
+    if (empty($_POST['username'])) {
+        die('請輸入 username');
+    }
+
+    /*得到 usernam 的值和 sql 語法*/
+    $username = $_POST['username'];
+    $sql = sprintf(
+        "insert into user(username) values('%s')",
+        $username
+    );
+
+    $result = $conn->query($sql);
+    if (!$result) {
+        die($conn->error);
+    }
+
+    /* 重新導向 index.php */
+    header("Location: index.php");
+?>
+```
+
+- `sprintf(string, variable)` 可以想成像 ES6 的 Template Literals，前面放文字，如果遇到需要放變數的字就用 %s 、數字就用 %d ，後面依序放入變數。
+- 這種狀況也可以用字串拼接的方法，例如 `"insert into user(username) values(' " . %s . "')"`
+- 如果使用 get 重新整理網頁又會再新增一筆資料。
+- 如果要用 id 大小排序，可以用 `->query("SELECT * FROM user ORDER")` 。最後加上 `ASC` 是由小排到大， `DESC` 則是大到小。
+
+## Delete 刪除資料
+
+邏輯：
+
+1. 用 GET 的方法到 delete.php?id=x
+2. 用 query 刪除
+3. 如果 id 不存在，會執行成功但影響 0 行
+   可以用 `$conn->affected_rows` 看影響到幾列，藉此判斷是否成功。
+
+```
+<?php
+    require_once('conn.php');
+
+    /* 沒拿到 get 就顯示錯誤 */
+    if(empty($_GET['id'])) {
+        die('刪除失敗');
+    }
+
+    /* 設定 id 和指令 */
+    $id = $_GET['id'];
+    $sql = sprintf(
+        "DELETE FROM user WHERE id=%d", $id
+    );
+    echo $sql . '<br>';
+
+    /* query 執行刪除 */
+    $result = $conn->query($sql);
+    if (!$result) {
+        die($conn->error);
+    }
+
+    /* 有資料被影響就顯示成功，否則查無資料 */
+    if ($conn->affected_rows >= 1) {
+        echo '刪除成功';
+    } else {
+        echo '查無資料';
+    }
+?>
+```
+
+## Update 編輯資料
+
+步驟：
+
+1. 用 POST 連接到 update.php
+2. 用 empty 檢查是否漏填
+3. query 修改資料
+4. 若有改有誤，提醒
+5. 回到首頁
+
+```
+<?php
+    require_once('conn.php');
+
+    if (empty($_POST['id']) || empty($_POST['username'])) {
+        die('請輸入 id 與 username');
+    }
+
+    $id = $_POST['id'];
+    $username = $_POST['username'];
+    $sql = sprintf(
+        "UPDATE user SET username='%s' WHERE id=%d",
+        $username,
+        $id
+    );
+
+    echo $sql . '<br>';
+    $result = $conn->query($sql);
+    if (!$result) {
+        die($conn->error);
+    }
+
+    header("Location: index.php");
+?>
+```
+
+# 參考資料
+
+[後端基礎 PHP 與 MySQL](https://hackmd.io/HSgibRj2R22eo7bk-qbJsw)

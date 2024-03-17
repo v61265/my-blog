@@ -1,0 +1,344 @@
+---
+title: '給自己看的 JavaScript 進階 - hoisting'
+date: 2020-10-24
+slug: '/JavaScript-advanced-hoisting'
+canonicalUrl: 'https://v61265.github.io/myBlog'
+tags:
+  - 程式導師計劃
+  - coding 筆記
+  - JavaScript
+---
+
+給自己看的 JS 進階：（建議按照順序看）
+[給自己看的 JS 進階－變數](/JavaScript-advanced-variable)
+[給自己看的 JS 進階－Hoisting](/JavaScript-advanced-hoisting)
+[給自己看的 JS 進階－Closure](/JavaScript-advanced-closure)
+[給自己看的 JS 進階－物件導向](JavaScript-advanced-oop)
+
+如果只輸入 `console.log(b)` 會因為 b 沒有被宣告過而噴錯，但如果這樣寫：
+
+```js
+console.log(b);
+var b = 20;
+```
+
+第一行會顯示 `indefined` 的結果，是因為對 JavaScript 來說，其實是：
+
+```js
+var b;
+console.log(b);
+b = 20;
+```
+
+這個現象叫做 `hoistion` 提升，在 JS 中，只有宣告 `var b` 會被提升，賦值 `b = 20` 並不會。
+
+function 也會提升：
+
+```js
+test(); // 123
+
+function test() {
+  console.log(123);
+}
+```
+
+值得注意的是，下列寫法會出錯：
+
+```js
+test(); // test is not a function
+
+var test = () => {
+  console.log(123);
+};
+```
+
+因為對 JS 來說，實際上提升的只有宣告，所以是這樣：
+
+```js
+var test;
+test();
+
+test = () => {
+  console.log(123);
+};
+```
+
+### hoisting 的順序
+
+hoisting 只會發生在自己的 scope 中，例如：
+
+```js
+var a = 'global';
+function test() {
+  console.log(a);
+  var a = 'local';
+}
+
+test();
+```
+
+會印出 `undefined` ，因為 function 內有個 hoisting，所以實際上是這樣：
+
+```js
+var a = 'global';
+function test() {
+  var a;
+  console.log(a);
+  a = 'local';
+}
+
+test();
+```
+
+#### 提升的優先順序
+
+1. `function` 的提升會佔有優先權：
+
+```js
+console.log(a); // [Function a]
+function a() {}
+var a = 'a';
+```
+
+可以看成這樣：
+
+```js
+function a() {}
+console.log(a); // [Function a]
+var a = 'a';
+```
+
+2. 後面蓋掉前面的
+
+```js
+console.log(a); // 2
+var a = 1;
+var a = 2;
+```
+
+3. 提升變數不會影響函式輸入的參數
+
+```js
+function test(a) {
+  console.log(a); // 123
+  var a = 456;
+}
+test(123);
+```
+
+因為上述提升後只是先定義 a 只是「我要宣告變數 a ㄛ～」沒有影響，但賦值會影響：
+
+```js
+function test(a) {
+  var a = undefined;
+  console.log(a); // undefined
+  a = 456;
+}
+test(123);
+```
+
+4. 提升 function 會被蓋過去
+
+```js
+function test() {
+  console.log(a); // [Function a]
+  function a() {}
+}
+test(123);
+```
+
+因此可歸納出 hoisting 的優先順序：
+
+1. function
+2. arguments
+3. var
+
+#### hoisting 原理
+
+開始之前先試著自己做做看這個題目：
+
+```js
+var a = 1;
+function test() {
+  console.log('1.', a);
+  var a = 7;
+  console.log('2.', a);
+  a++;
+  var a;
+  inner();
+  console.log('4.', a);
+  function inner() {
+    console.log('3.', a);
+    a = 30;
+    b = 200;
+  }
+}
+test();
+console.log('5.', a);
+a = 70;
+console.log('6.', a);
+console.log('7.', b);
+```
+
+我先猜答案是：
+
+```
+1. 1
+2. 7
+3. 8
+4. 30
+5. 30
+6. 70
+7. b is not defined
+```
+
+我們先 hoisting 成 JS 真正跑的順序好了：
+
+```js
+var a = 1;
+function test() {
+  var a; // hoisting 上來
+  console.log('1.', a); // 找到上一行，undefined
+  a = 7;
+  console.log('2.', a); // 7
+  a++; // 此時 a = 8
+  var a; // 沒有影響，已經有 a 了
+  inner();
+  console.log('4.', a); // 可看下三行已經被改成 30
+  function inner() {
+    console.log('3.', a); // 本身沒有宣告，往上一層找 a = 8
+    a = 30; // 因為沒有用 var 宣告，因此更改到 test() 中的 a
+    b = 200; // 因為沒有用 var 宣告， b 變成全域變數
+  }
+}
+test();
+console.log('5.', a); // 和 test scope 無關了，看全域 a = 1
+a = 70;
+console.log('6.', a); // 70
+console.log('7.', b); // inner 的 b 是全域變數，因此是 200
+```
+
+因此答案是：
+
+```
+1. undefined
+2. 7
+3. 8
+4. 30
+5. 1
+6. 70
+7. 200
+```
+
+**接著來看 ECMAScript ES3 的部分**
+
+![](https://user-images.githubusercontent.com/2755720/49352096-5d706b80-f6f1-11e8-82fe-8fbff9004184.png)
+
+我們一開始再粉紅色的 `Global Execution Context` ，之後每進入一層函式就堆高一層，結束後就抽掉退出（可以想像玩疊疊樂？或同時看很多本書，最上面的是正在看的，看完就放到一邊），最上面的表示現在所在位置。整個程式結束時會回到最下層。
+
+每個 Execution Context 中都有一個 `Variable Object` (VO) ，可以想像成是一個物件，每個變數和值都會對應到 key 和 value 。例如：
+
+```js
+var a = 1;
+
+// 這裡的 VO 可以想成
+VO: {
+  a: 1;
+}
+```
+
+當進入新的 Execution Context （例如一個 function ）時， VO 會自動初始化。順序如下：
+
+1. 將參數傳入。
+2. 傳入 function，就算已經有值也蓋掉。（可以解釋為何 function 順位最高）
+3. 最後是變數宣告，如果有值就忽略（因此順位最低），沒有的話就增加一個先定義為 undefined 。
+
+之後才會開始跑裡面的 code 。
+
+**回頭看剛剛那題：**
+
+```js
+var a = 1; //1
+function test() {
+  console.log('1.', a); // 3
+  var a = 7; // 4
+  console.log('2.', a); // 5
+  a++; //6
+  var a; // 7
+  inner(); // 8
+  console.log('4.', a); // 12
+  function inner() {
+    console.log('3.', a); // 9
+    a = 30; // 10
+    b = 200; // 11
+  }
+}
+test(); // 2
+console.log('5.', a); // 13
+a = 70; // 14
+console.log('6.', a); //15
+console.log('7.', b); //16
+```
+
+一開始進去的時後 `global VO` 開始初始化：
+
+```js
+global VO: {
+	test: function,
+	a: undefined
+}
+```
+
+1. `global VO` 的 a 變成 1
+2. 進入 test() ，新的 `test VO` 初始化：
+
+```js
+test VO: {
+	inner: function,
+	a: undefined
+}
+```
+
+3. 此時的 `test VO` 中 a 是 undefined ，輸出。
+4. `test VO` 的 a 變成 7。
+5. `test VO` 的 a 是 7，輸出。
+6. `test VO` 的 a 變成 8 。
+7. 宣告過了，不用理他。
+8. 進入 inner() ，新的 `test VO` 初始化：
+
+```js
+test VO: {
+	// 沒有任何參數、變數和函式，因此是空的
+}
+```
+
+9. `inner VO` 中沒有 a ，往上找到 `test VO` 中的 a 是 8 ，回傳。
+10. `inner VO` 中沒有 a ，往上找到 `test VO` 改 a 的值為 30 。
+11. `inner VO` 中沒有 b ，往上找 `test VO` ，因此將 b: 200 放在 `global VO` 中（也就是變成全域變數）。inner() 執行結束，抽掉 `inner EC` 。
+12. 因為 10 ， `test VO` 中的值為 30 。test() 執行結束，抽掉 `test EC` 。
+13. `global VO` 的 a 為 1 （可見第一條），回傳 。
+14. `global VO` 的 a 改變成 70 。
+15. `global VO` 的 a 為 70，回傳。
+16. `global VO` 的 b 為 200（可見 11 條），回傳。
+17. 全部執行完，退出 `Global EC`。
+
+#### let 和 const 的 hoisting
+
+先看一個情境：
+
+```js
+console.log(a);
+let a = 20;
+```
+
+結果竟然會噴錯！難道 let 和 const 是沒有 hoisting 的嗎？！
+
+其實 let 和 const 是有 hoisting 的，只是有一些奇怪的限制。我們先將 hoisting 後的結果寫下來：
+
+```js
+let a;
+console.log(a);
+a = 20;
+```
+
+在使用 let 和 const 宣告變數的時候，在變數被賦值之前都不能被使用，因此才會噴錯。在宣告候到賦值前的區塊，有個詞叫 `Temporal Dead Zone` ，在區域中不能取用這個值～

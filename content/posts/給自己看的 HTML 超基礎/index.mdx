@@ -1,0 +1,191 @@
+---
+title: '給自己看的 HTML 超基礎'
+date: 2020-08-10
+slug: '/JavaScript-API'
+canonicalUrl: 'https://v61265.github.io/myBlog'
+tags:
+  - 程式導師計劃
+  - coding 筆記
+---
+
+## 關於這篇文章
+
+雖然目前進度有點落後，不過因為是第一次那麼有系統性的學習 HTML 和 CSS。因此這篇筆記的目的是，讓未來的自己想不起來「咦這個功能叫什麼名字」的時候可以回頭查看。因為目前只看完 [EF101](https://lidemy.com/courses/enrolled/390445) ，也當作再複習一次，比較安心。
+
+**更新紀錄：**
+2020/08/09 一小時挑戰 => 延續至 08/10
+
+# 什麼是 HTML ？
+
+HTML 全名是 Hyper Text Markup Language 超文本標記語言，它並不是一個程式語言。主要用於規劃網頁架構，通過標籤定義網頁的原始內容，例如：這行字是標題，這幾行是一塊，這行字是按鈕。
+
+## 基本架構
+
+![](https://www.jungledisk.com/blog/content/images/blog/div-soup-vs-semantic-html.png)
+`<!DOCYTPE HTML>`：通常會加在檔案最前面，表示我要用最新標準格式，可加可不加。
+`<html>`：將整個網頁包起來。
+`<head>`：放基本資訊。
+`<body>`：網頁主要內容。
+因此一個基本的 HTML 架構會長這樣：
+
+```html
+<html>
+  <head> </head>
+  <body></body>
+</html>
+```
+
+HTML 的標籤都是由一組包起來的，例如 `<html>` （開）和 `</html>` （合）就是一組，其中就是該標籤作用處。有些標籤也可將開合寫在一起，例如 header 中指定編碼方式的 `<meta charset="utf8" />` 就是一個例子。
+`<title>` 是另一個常見於放在 head 的標籤，可設定該網頁的標題。在瀏覽器看起來就會如下：
+![](https://static.coderbridge.com/img/v61265/1e134435755a4220a202c5c48cbfac54.png)
+另外，若要 `加註解` 的話，可用 `<!--註解註解-->` ，如此內容便不會顯示於網頁上。
+
+# 語意化標籤
+
+語意化標籤的目的是為了讓標籤(Tag)更具意義，以加強文件的結構化，讓搜尋引擎更清楚了解。例如早期分段都只用 `<div>` ，現在卻多了 `<header>` 、 `<main>` 和 `<footer>` 之類的，雖然效果顯示上一樣，不過更方便回頭 debug 或溝通。
+
+# 文字
+
+HTML 最早就是為了顯示文字，最常見的兩種為：
+`<h1>` ~ `<h6>` ： 有點類似 Markdown 中文字前面加上 `#` ~ `######` ，數字越大字就越大。
+`<p>` ：一個文字段落。
+![](https://static.coderbridge.com/img/v61265/6f211f93158b49108e6b87e89a19c35d.png)
+另外因為內容會忽略前後的空格，因此若要保留完整輸入格式，可用 `<pre>` 包起來。另外加入 `<br/>` 可強制換行。
+
+# 排版
+
+排版的詳細好處會在 CSS 感受到。
+`<div>`：包住一組文字，並且自動換行。
+`<span>`：包住一組文字，但不會自動換行，通常是在段落內的文字。
+
+# 圖片
+
+```html
+<img src="url" />
+```
+
+屬性：
+`alt="替代文字"` ：當圖片連結失效，原本位置會顯示替代文字。
+`title="文字"`：滑鼠移上去會顯示的文字。
+
+# 清單
+
+`<li>`：個別包住清單中的每一條。
+`<ul>`：包住沒有排序的。
+`<ol>`：則是有排序的。
+例如在 body 輸入：
+
+```html
+<ul>
+  <li>ul是</li>
+  <li>沒有排序的清單</li>
+</ul>
+<ol>
+  <li>ol包住</li>
+  <li>有排序的清單</li>
+</ol>
+```
+
+就會變成這樣：
+![](https://static.coderbridge.com/img/v61265/0615987e22974f7e8654da4f7830ac48.png)
+
+# 表格
+
+`<table>`：框住整個表格。
+`<tr>`：框出橫的 row 。
+`<td>`：框出直的 colmn 。
+`<th>`：和　`<td>` 很像，可用於標題。
+例如：
+
+```html
+<table>
+  <tr>
+    <th>編號</th>
+    <th>姓名</th>
+    <th>成績</th>
+  </tr>
+  <tr>
+    <td>001</td>
+    <td>小明</td>
+    <td>30</td>
+  </tr>
+  <tr>
+    <td>002</td>
+    <td>小美</td>
+    <td>92</td>
+  </tr>
+</table>
+```
+
+會出現：
+
+```html
+<table>
+  <tr>
+    <th>編號</th>
+    <th>姓名</th>
+    <th>成績</th>
+  </tr>
+  <tr>
+    <td>001</td>
+    <td>小明</td>
+    <td>30</td>
+  </tr>
+  <tr>
+    <td>002</td>
+    <td>小美</td>
+    <td>92</t>
+  </tr>
+</table>
+```
+
+# 錨點
+
+`a` 是 anchor 的意思，通常搭配 `href` (hypertext referance) 指向目的地。
+
+```
+<!-- 超連結 -->
+<a href="https://www.coderbridge.com/@v61265">我的主頁</a>
+<!-- 像維基百科那樣連到自己頁面的其他地方 -->
+<a id='123'>目標內容</a>
+<a href='#123'>連結文字：到目標內容去</a>
+```
+
+會出現：
+
+<a href='https://www.coderbridge.com/@v61265'>我的主頁</a>
+<a href='#123'>連結文字：到目標內容去</a>
+另外 a 有個屬性 `target`：
+`target:_self`：直接連結到網頁，沒設定的話就預設這種。
+`target:_blank`：在新分頁開啟網頁。
+# 嵌入網頁
+```
+<iframe src="url" width=100px height=20% />
+```
+# 表單
+![](https://www.internetingishard.com/html-and-css/forms/html-form-elements-939709.png)
+```html
+<form>
+  <!--輸入框-->
+  <input type="text" /> 
+  <!--送出按鈕-->
+  <input type="submit" value="上面的字" />
+  <!--密碼框（會自動碼掉輸入）-->
+  <input type="password"/>
+  <!--輸入信箱(自動偵測有沒有@)-->
+  <input type="email"/>
+  <!--輸入日期-->
+  <input type="date"/>
+  <!--單選-->
+  <input type="radio" name="群組名稱" id="選項名"/><label for="選項名">選項描述(點這個字也可以選到)</label>
+  <!--多選-->
+  <input type="checkbox"/>
+</form>
+```
+
+# 參考資料
+
+[HTML ＆ SEO](https://hackmd.io/ff_zXfEzRLmMiEiVV5wAEw)
+[何謂 HTML？](https://medium.com/@angela52799/%E4%BD%95%E8%AC%82-html-8306bb9bda2)
+[快速了解 HTML 語意化標籤](https://medium.com/@changru.studio/%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3html%E8%AA%9E%E6%84%8F%E5%8C%96%E6%A8%99%E7%B1%A4-33dd8247d779)
+[html forms](https://www.internetingishard.com/html-and-css/forms/)

@@ -160,7 +160,7 @@ tags:
   - Tutorial
   - Dark Arts
 banner: ./defence-against-the-dark-arts.jpg
-canonicalUrl: https://random-blog-about-curses.com/curses-counter-curses-and-more
+canonicalUrl: https://v61265.github.io/myBlog/curses-counter-curses-and-more
 ---
 ```
 
@@ -183,7 +183,7 @@ Additional pages can be created by placing MDX files inside `contents/pages`, e.
 ```md
 ---
 title: About
-slug: "/about"
+slug: '/about'
 defer: false
 ---
 ```
