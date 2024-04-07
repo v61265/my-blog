@@ -33,6 +33,10 @@ const config: GatsbyConfig = {
             title: `About`,
             slug: `/about`,
           },
+          {
+            title: `Projects`,
+            slug: `/projects`,
+          },
         ],
         externalLinks: [
           {
@@ -62,9 +66,9 @@ const config: GatsbyConfig = {
         display: `standalone`,
         icons: [
           {
-            src: `/icon.png`,
-            sizes: `192x192`,
-            type: `image/png`,
+            src: `/favicon.ico`,
+            sizes: `128x128`,
+            type: `image/ico`,
           },
         ],
       },
@@ -121,6 +125,13 @@ const config: GatsbyConfig = {
             title: `Minimal Blog - @lekoarts/gatsby-theme-minimal-blog`,
           },
         ],
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `projects`,
+        path: `${__dirname}/content/projects/`,
       },
     },
     // You can remove this plugin if you don't need it
