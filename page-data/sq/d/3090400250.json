@@ -1,0 +1,1 @@
+{"data":{"minimalBlogConfig":{"basePath":"/","blogPath":"/blog","postsPath":"content/posts","pagesPath":"content/pages","tagsPath":"/tags","externalLinks":[{"name":"Github","url":"https://github.com/v61265"}],"navigation":[{"title":"Blog","slug":"/blog"},{"title":"About","slug":"/about"},{"title":"Projects","slug":"/projects"}],"showLineNumbers":false,"showCopyButton":true}}}
