@@ -26,7 +26,7 @@ or（如果我寫到一半發懶）
 
 PHP 中雜湊的語法如下：
 
-    ```
+    ```PHP
     password_hash(<string>, <編碼方式>)
     //可轉換成 hash ，建議存到預留 60 字元以上的欄位
     password_verifty(<明文>, <hash>)
@@ -39,13 +39,13 @@ SQL Injection 是在輸入的字串中夾帶 SQL 的語法，又因為字串拼�
 
 程式碼如下：
 
-    ```
+    ```php
     $sql = sprintf("INSERT INTO comments(username, content) VALUES('%s', '%s')", $_POST['username'], $_POST['content']);
     ```
 
 只要我在 content 的欄位輸入 `'), ('not_me', (select password from users));#` ，就會變成這樣：
 
-```
+```php
 	$sql = INSERT INTO comments(username, content) VALUES('me', ''), ('not_me', (select password from users));#')
 ```
 
@@ -53,7 +53,7 @@ SQL Injection 是在輸入的字串中夾帶 SQL 的語法，又因為字串拼�
 
 **解決方法：使用 SQL 內建機制拼接**
 
-```
+```php
 $sql =
 // 這邊預留空間的方法是用問號 '?'
 $stmt = $conn->prepare($sql) ;
@@ -72,8 +72,11 @@ $result = $stmt->get_result()
 
 XSS 全名 `Cross-Site Scripting` ，也就是跨網站執行 JavaScript。例如顯示留言的地方的 HTML 如下：
 
-```
-<div class='content'><?php echo $row['content']?><div>
+```html
+<div class="content">
+  <?php echo $row['content']?>
+  <div></div>
+</div>
 ```
 
 這時只要使用者輸入 html 或 JavaScript 語法，例如 `<script>alert('hacked')</script>` ，就會直接被解讀為程式碼的一部份並被執行。
@@ -128,7 +131,7 @@ Server 端可以進行雙重驗證，像是輸入驗證碼就很直接，但每�
 
 PHP 基礎語法：
 
-```
+```php
 // 建立一個空陣列
 $json = array();
 // 在陣列中增加一個新的物件
@@ -148,20 +151,20 @@ echo $respons;
 
 串接 API 的方法有很多種，以下示範用 jQuery 實作 Ajax 的方法：
 
-```
+```jQuery
 $.ajax({
    method: 'GET',
    url: 'https://'
 }).done(function(data) {
    console.log(data)
-}).fail(function(err)) {
+}).fail(function(err) {
    console.log(err)
 })
 ```
 
 或是
 
-```
+```jQuery
 $.ajax({
     method: 'GET',
     url: 'https://',
@@ -227,21 +230,21 @@ Webpack 是一種 module bundler ，也就是可以將各種資源打包在一�
     ```
 2.  設定 `webpack.config.js` ，最基本設定如下：
 
-    ```
+    ```js
     const path = require('path');
 
     module.exports = {
-     mode: 'production',  // 預設是production(壓縮代碼)， development 指定為開發環境(未壓縮代碼)
-     entry: './src/index.js', // 從哪裡引入模組
-     output: {
-    	filename: 'main.js', // 輸出之後放到哪裡
-    	path: path.resolve(__dirname, 'dist'),
-     },
+      mode: 'production', // 預設是production(壓縮代碼)， development 指定為開發環境(未壓縮代碼)
+      entry: './src/index.js', // 從哪裡引入模組
+      output: {
+        filename: 'main.js', // 輸出之後放到哪裡
+        path: path.resolve(__dirname, 'dist'),
+      },
     };
     ```
 
 3.  設定 `package.json`
-    ```
+    ```json
     "scripts": {
     	"build": "webpack", // 之後輸入 npm run build 時就會跑 webpack ㄌ
     	"test": "echo \"Error: no test specified\" && exit 1"
@@ -260,8 +263,8 @@ Webpack 是一種 module bundler ，也就是可以將各種資源打包在一�
 
 最基本的語法是：
 
-```
-fetch('url')
+```js
+fetch('url');
 ```
 
 之後如果要加 header 或其他設定可以用物件形式放在第二個參數中。另外，如果要 POST 的話，`body` 中的 content type 必須符合才行。
@@ -272,19 +275,21 @@ fetch 出來的結果會以 Promise 形式出現，必須用 `.then(cb)` 才能�
 
 `Promise` 是一個表示非同步運算的最終完成或失敗的物件。因此自己建立一個 Promise 必須輸入兩個函數：成功和失敗的值，而且通常只會有一個被觸發。以下是示意：
 
-```
+```js
 function init(resolve, reject) {
-	resolve(3);
-	reject(5);
+  resolve(3);
+  reject(5);
 }
 
-const myPromise = new Promise(init)
+const myPromise = new Promise(init);
 
-myPromise.then((data) => {
-	console.log(data) // 如果成功就跑出 3
-}).catch((err) => {
-	console.log(err) // 有錯誤的話就跑出 5
-})
+myPromise
+  .then((data) => {
+    console.log(data); // 如果成功就跑出 3
+  })
+  .catch((err) => {
+    console.log(err); // 有錯誤的話就跑出 5
+  });
 ```
 
 ### P2 你知道 gulp 的目的以及原理
@@ -311,15 +316,15 @@ glup 是一套 `task manager` ，將任務集中管理並設定執行流程。�
 
 不知道（等等），以下紀錄跑 SASS 的方法，列一下在設定檔 `gulpfile.js` 要做的事：
 
-```
+```js
 const { src, dest } = require('gulp');
 const sass = require('gulp-sass');
 sass.compiler = require('node-sass');
 
 function defaultTask() {
- return src('src/*.scss') // 輸入這個檔案
-   .pipe(sass().on('error', sass.logError))
-   .pipe(dest('./css')) // 輸出成這個檔案
+  return src('src/*.scss') // 輸入這個檔案
+    .pipe(sass().on('error', sass.logError))
+    .pipe(dest('./css')); // 輸出成這個檔案
 }
 
 exports.default = defaultTask;
@@ -416,7 +421,7 @@ Transaction 是指由一系列資料庫操作組成的一個完整的邏輯過�
 
 View 是一張虛擬 table ，只能讀取不能改寫，好處是方便檢視不同 table 的特定欄位，在開放資料庫給他人時也方便隱藏比較機密的欄位，不過缺點是不易維護。
 
-```
+```sql
 CREATE VIEW view_name [(column_list)] AS
 SELECT column_name(s)
 FROM table_name
@@ -427,7 +432,7 @@ WHERE condition;
 
 SQL 的 function 有分兩種，一種是內建函式例如 `SUM()` ，另一種則是 Stored procedure ，其設定完後可以直接取代 query 。
 
-```
+```sql
 DELIMITER //
 CREATE PROCEDURE functionName()
   BEGIN
@@ -446,7 +451,7 @@ DELIMITER ;
 
 Trigger 的用於記錄資料庫的變動，並用 table 將變動記錄下來。
 
-```
+```sql
 delimiter //
 CREATE TRIGGER 名稱
     BEFORE UPDATE FROM table名稱

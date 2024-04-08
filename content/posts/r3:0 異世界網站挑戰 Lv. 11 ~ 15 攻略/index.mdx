@@ -21,11 +21,14 @@ tags:
 用右鍵打開檢查後，發現有個 API 因為同源政策串接失敗，因此我們要避開瀏覽器，使用 Node.js 得到 API 。
 ![](https://static.coderbridge.com/img/v61265/485db60c57504e21b71048ad8f74ed7a.png)
 
-```
+```js
 const request = require('request');
-request.post({uri:'https://glacial-everglades-11859.herokuapp.com/api.php'}, function(err, res, body) {
+request.post(
+  { uri: 'https://glacial-everglades-11859.herokuapp.com/api.php' },
+  function (err, res, body) {
     console.log(body);
-})
+  }
+);
 ```
 
 執行後就可以得到 token 前往下一關了 XD
@@ -42,11 +45,14 @@ request.post({uri:'https://glacial-everglades-11859.herokuapp.com/api.php'}, fun
 ![](https://static.coderbridge.com/img/v61265/433787f94e9245baa779a50f5075e547.png)
 id 不等於 888888 才會送出 request，那 id=888888 的那條訊息到底有甚麼呢？我們用 Node.js 發出 request 看看：
 
-```
+```js
 const request = require('request');
-request('http://r30challenge.herokuapp.com/news_api.php?id=888888', function(err, res, body) {
+request(
+  'http://r30challenge.herokuapp.com/news_api.php?id=888888',
+  function (err, res, body) {
     console.log(body);
-})
+  }
+);
 ```
 
 出現了！
@@ -75,7 +81,7 @@ request('http://r30challenge.herokuapp.com/news_api.php?id=888888', function(err
 
 不知道要做什麼的時候，只要打開 Devtool 就可以找到線索！果然 .php 檔中找到一段被隱藏的程式碼：
 
-```
+```php
 <!-- secret logic
           function isTokenValid($token) {
             $h = date('H');

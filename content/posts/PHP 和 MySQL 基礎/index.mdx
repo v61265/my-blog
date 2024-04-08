@@ -44,13 +44,13 @@ MySQL 是一種關聯式資料庫。
 
 ### Insert 新增資料
 
-```
+```sql
 INSERT INTO `<table name>` ('<key1>', '<key2>') VALUES('value1', 'value2');
 ```
 
 ### Update 修改資料
 
-```
+```sql
 UPDATE `<table name>` SET 'key1'='value1', 'key1'='value1' WHERE 條件
 ```
 
@@ -58,7 +58,7 @@ UPDATE `<table name>` SET 'key1'='value1', 'key1'='value1' WHERE 條件
 
 ### Selector 查詢資料
 
-```
+```sql
 SELECT key1, key2 FROM `<table name>` WHERE 條件;
 ```
 
@@ -68,7 +68,7 @@ SELECT key1, key2 FROM `<table name>` WHERE 條件;
 
 ### Delete
 
-```
+```sql
 DELETE FROM `<table name>` WHERE 條件
 ```
 
@@ -84,8 +84,8 @@ DELETE FROM `<table name>` WHERE 條件
 
 本文送出資料的方式是使用表單，也就是在 .php 中加入這段語法：
 
-```
-<form method='方法' action='存取目的'>
+```html
+<form method="方法" action="存取目的"></form>
 ```
 
 ### GET
@@ -103,7 +103,7 @@ DELETE FROM `<table name>` WHERE 條件
 
 ## PHP 和資料庫連線
 
-```
+```php
 <?php
 
     /* 基礎資料設定通常最後會隱藏起來，
@@ -132,8 +132,8 @@ DELETE FROM `<table name>` WHERE 條件
 
 這個檔案只會放連線資訊，其他檔案要用時要引入：
 
-```
-require_once('conn.php);
+```js
+require_once('conn.php');
 ```
 
 ## CURD
@@ -146,7 +146,7 @@ require_once('conn.php);
 2. 檢查錯誤
 3. 拿出結果
 
-```
+```php
 <?php
     /* 和資料庫連線 */
     require_once('conn.php');
@@ -172,7 +172,7 @@ require_once('conn.php);
 
 ## Create 新增資料
 
-```
+```php
 <?php
     require_once('conn.php');
 
@@ -212,7 +212,7 @@ require_once('conn.php);
 3. 如果 id 不存在，會執行成功但影響 0 行
    可以用 `$conn->affected_rows` 看影響到幾列，藉此判斷是否成功。
 
-```
+```PHP
 <?php
     require_once('conn.php');
 
@@ -253,7 +253,7 @@ require_once('conn.php);
 4. 若有改有誤，提醒
 5. 回到首頁
 
-```
+```php
 <?php
     require_once('conn.php');
 

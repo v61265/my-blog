@@ -145,27 +145,27 @@ tags:
 - 你知道「回傳」跟「輸出」的差異
   如果把函式比喻成黑盒子，input 一些東西就會 `回傳` output，數學中的 `f(x)=y` 中的 y 就是回傳值。在 Javascript 中用 return 表示，如果沒有 return 則預設回傳值為 `undefined`。
 
-```
+```js
 function print(a) {
   return a;
 }
 
-print('hello')
+print('hello');
 // 會回傳 hello ，但不會顯示任何東西
-console.log(print('hello'))
+console.log(print('hello'));
 // 印出 hello
 ```
 
 相對的， `console.log()` 只是單純將內容 `輸出`。
 
-```
+```js
 function print(a) {
   console.log(a);
 }
 
-print('hello')
+print('hello');
 // 印出 hello
-console.log(print('hello'))
+console.log(print('hello'));
 // undefined
 ```
 

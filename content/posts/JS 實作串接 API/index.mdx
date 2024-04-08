@@ -58,13 +58,13 @@ request(input, init)
 
 通常 input 為目標網址，例如官網上提供的範本為：
 
-```
+```js
 const request = require('request');
 request('http://www.google.com', function (error, response, body) {
-   console.error('error:', error);
-   console.log('statusCode:', response && response.statusCode);
-   console.log('head:', response.headers);
-   console.log('body:', body);
+  console.error('error:', error);
+  console.log('statusCode:', response && response.statusCode);
+  console.log('head:', response.headers);
+  console.log('body:', body);
 });
 ```
 
@@ -75,18 +75,18 @@ request('http://www.google.com', function (error, response, body) {
 參考資料： [MDN](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
 `JSON.parse()` 可以將 JSON 轉成物件，第一個參數放欲轉換的 JSON ，後面可以指示如何選擇結果。例如
 
-```
+```js
 const json = {
-  "name" : "jason",
-  "age" : "23",
-  "phone" : "0922"
-}
+  name: 'jason',
+  age: '23',
+  phone: '0922',
+};
 
 // 排除 age
 const obj = JSON.parse(json, (key, value) => {
-  if (key === 'age') return undefined
-  return value
-})
+  if (key === 'age') return undefined;
+  return value;
+});
 
 //{name: "jason", phone: "0922"}
 ```
@@ -95,18 +95,18 @@ const obj = JSON.parse(json, (key, value) => {
 參考資料： [MDN](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
 與此相對的， `JSON.stringify()` 可將物件轉換成 JSON 格式。第一個參數一樣放物件，後面則是結果的轉換標準。
 
-```
+```js
 const obj = {
-  name: "jason",
-  age: "23",
-  phone: "0922"
-}
+  name: 'jason',
+  age: '23',
+  phone: '0922',
+};
 
 // 排除 age
 const json = JSON.stringify(obj, (key, value) => {
-  if (key === 'age') return undefined
-  return value
-})
+  if (key === 'age') return undefined;
+  return value;
+});
 
 //{"name": "jason", "phone": "0922"} <= 這是字串
 ```
@@ -116,14 +116,14 @@ const json = JSON.stringify(obj, (key, value) => {
 參考資料： [MDN](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Obsolete_Pages/Obsolete_Pages/Obsolete_Pages/%E4%BE%8B%E5%A4%96%E8%99%95%E7%90%86%E8%AA%9E%E6%B3%95/try...catch_%E8%AA%9E%E6%B3%95)
 `try...catch` 可用於程式中可能出錯處，主動捕捉錯誤，並防止整個程式因錯誤而停擺。用法如下：
 
-```
+```js
 try {
-   // 預期可能會發生錯誤的程式碼
+  // 預期可能會發生錯誤的程式碼
 } catch (e) {
-   // try 區塊有拋出錯誤時，則執行這裡的程式碼
+  // try 區塊有拋出錯誤時，則執行這裡的程式碼
 } finally {
-   // finally 區塊的程式碼一定會在最後被執行
-   // 可以省略 finally 區塊
+  // finally 區塊的程式碼一定會在最後被執行
+  // 可以省略 finally 區塊
 }
 ```
 
@@ -131,7 +131,7 @@ try {
 
 因為實在太菜了，直接看答案怎麼寫好了：
 
-```
+```js
 const request = require('request');
 const API_ENDPOINT = 'https://lidemy-book-store.herokuapp.com';
 
@@ -139,17 +139,17 @@ request(`${API_ENDPOINT}/books?_limit=10`, (err, res, body) => {
   if (err) {
     return console.log('抓取失敗', err);
   }
-  let data
+  let data;
   try {
     data = JSON.parse(body);
-  } catch(err) {
+  } catch (err) {
     console.log(err);
-    return
+    return;
   }
   for (let i = 0; i < data.length; i += 1) {
     console.log(`${data[i].id} ${data[i].name}`);
   }
-})
+});
 ```
 
 **筆記：**
@@ -187,17 +187,17 @@ node hw2.js update 1 "new name" // 更新 id 為 1 的書名為 new name
 
 **找到第二三個參數**
 
-```
+```js
 const request = require('request');
 
 const apiUrl = 'https://lidemy-book-store.herokuapp.com';
-const action = process.argv[2]
-const param = process.argv[3]
+const action = process.argv[2];
+const param = process.argv[3];
 ```
 
 **用 switch 區分功能**
 
-```
+```js
 switch (action) {
   case 'list':
     listBooks();
@@ -222,13 +222,13 @@ switch (action) {
 **list 功能**
 這個上一題練習過了：
 
-```
+```js
 function listBooks() {
   request(`${apiUrl}/books?_limit=20`, (err, res, body) => {
     if (err) return console.log('抓取失敗', err);
-    let data
+    let data;
     try {
-      data = JSON.parse(body)
+      data = JSON.parse(body);
     } catch (e) {
       return console.log(e);
     }
@@ -242,12 +242,12 @@ function listBooks() {
 **read 功能**
 從上面的函式修改：
 
-```
+```js
 function readBooks(id) {
   request(`${apiUrl}/books/${id}`, (err, res, body) => {
     if (err) return console.log('抓取失敗', err);
     const data = JSON.parse(body);
-    return console.log(data)
+    return console.log(data);
   });
 }
 ```
@@ -257,18 +257,19 @@ function readBooks(id) {
 [參考資料](https://github.com/request/request#convenience-methods)
 `request.delete()` 可以刪除資料，例如：
 
-```
+```js
 request.delete(
   'https://reqres.in/api/users/2',
   function (error, response, body) {
-    console.log(response.statusCode)
-  });
+    console.log(response.statusCode);
+  }
+);
 ```
 
 上方因為資料已經被刪掉了，因此會印出 204 。
 這題中，刪除的語法是這樣：
 
-```
+```js
 function deleteBooks(id) {
   request.delete(`${apiUrl}/books/${id}`, (err) => {
     if (err) return console.log('刪除失敗');
@@ -281,21 +282,22 @@ function deleteBooks(id) {
 
 `request.post()` 可以增加資料，最常見的形式為：
 
-```
+```js
 request.post(
-  {url,
-  form: {key:'value'}
-  },
-  function(err,httpResponse,body){ /* ... */ })
+  { url, form: { key: 'value' } },
+  function (err, httpResponse, body) {
+    /* ... */
+  }
+);
 ```
 
 這題中，新增的語法如下：
 
-```
+```js
 function createBooks(name) {
-  request.post({url: `${apiUrl}/books`, form: {name,}}, (err) => {
+  request.post({ url: `${apiUrl}/books`, form: { name } }, (err) => {
     if (err) return console.log('新增失敗', err);
-    return console.log('新增成功')
+    return console.log('新增成功');
   });
 }
 ```
@@ -313,9 +315,9 @@ request.patch({
 
 這題中寫法如下：
 
-```
+```js
 function updateBooks(id, newName) {
-  request.patch({url: `${apiUrl}/books/${id}`, form: {newName}}, (err) => {
+  request.patch({ url: `${apiUrl}/books/${id}`, form: { newName } }, (err) => {
     if (err) return console.log('更新失敗', err);
     return console.log('更新成功');
   });
@@ -334,7 +336,7 @@ function updateBooks(id, newName) {
 
 ## 偷看答案
 
-```
+```js
 const request = require('request');
 const args = process.argv;
 const API_ENDPOINT = 'https://restcountries.eu/rest/v2';
@@ -351,17 +353,17 @@ request(`${API_ENDPOINT}/name/${name}`, (err, res, body) => {
   }
   const data = JSON.parse(body);
   if (data.status === 404) {
-    return console.log('找不到國家資訊')
+    return console.log('找不到國家資訊');
   }
 
   for (let i = 0; i < data.length; i++) {
-    console.log('============')
+    console.log('============');
     console.log('國家：' + data[i].name);
     console.log('首都：' + data[i].capital);
     console.log('貨幣：' + data[i].currencies[0].code);
     console.log('國碼：' + data[i].callingCodes[0]);
   }
-})
+});
 ```
 
 ### 分析思路
@@ -395,7 +397,7 @@ request(`${API_ENDPOINT}/name/${name}`, (err, res, body) => {
 
 ## 如何加入 request header
 
-```
+```js
 request({
   method: 'GET',
   url: <url>,
@@ -409,17 +411,20 @@ request({
 
 ## 試著得到 body ，及其後
 
-```
-request ({
+```js
+request(
+  {
     method: 'GET',
     url: apiUrl,
     headers: {
-        'Client-ID': clientID,
-        'Accept': 'application/vnd.twitchtv.v5+json',
-    }
-}, (err, res, body) => {
-    console.log(body)
-})
+      'Client-ID': clientID,
+      Accept: 'application/vnd.twitchtv.v5+json',
+    },
+  },
+  (err, res, body) => {
+    console.log(body);
+  }
+);
 ```
 
 整理得到的 JSON 後得到：
@@ -434,9 +439,9 @@ request ({
 參考資料：[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/for...of)
 `for...of` 可將陣列的值依序取出：
 
-```
+```js
 for (variable of iterable) {
-    //statements
+  //statements
 }
 ```
 
@@ -445,27 +450,30 @@ for (variable of iterable) {
 
 ## 最終結果
 
-```
+```js
 const request = require('request');
 
 const apiUrl = 'https://api.twitch.tv/kraken/games/top';
 const clientID = 不給你複製我的ID;
 
-request({
-  method: 'GET',
-  url: apiUrl,
-  headers: {
-    'Client-ID': clientID,
-    Accept: 'application/vnd.twitchtv.v5+json',
+request(
+  {
+    method: 'GET',
+    url: apiUrl,
+    headers: {
+      'Client-ID': clientID,
+      Accept: 'application/vnd.twitchtv.v5+json',
+    },
   },
-}, (err, res, body) => {
-  if (err) return console.log('抓取失敗');
-  const data = JSON.parse(body).top;
-  for (const i of data) {
-    console.log(i.viewers, i.game.name);
+  (err, res, body) => {
+    if (err) return console.log('抓取失敗');
+    const data = JSON.parse(body).top;
+    for (const i of data) {
+      console.log(i.viewers, i.game.name);
+    }
+    return true;
   }
-  return true;
-});
+);
 ```
 
 沒什麼關聯但記錄一下：[curl 的用法](https://blog.techbridge.cc/2019/02/01/linux-curl-command-tutorial/)
@@ -525,7 +533,7 @@ Base URL: https://v61265.com
 
 ## 回傳所有餐廳資料
 
-```
+```js
 const request = require('request');
 
 request('https://v61265.com/reataurants', (err, res, body) => {
@@ -535,8 +543,8 @@ request('https://v61265.com/reataurants', (err, res, body) => {
 
 ## 回傳單一餐廳資料
 
-```
-const request = require('request')
+```js
+const request = require('request');
 
 request(`https://v61265.com/restaurants/${id}`, (err, res, body) => {
   //這裡是你要的內容
@@ -545,22 +553,25 @@ request(`https://v61265.com/restaurants/${id}`, (err, res, body) => {
 
 ## 增新餐廳
 
-```
+```js
 const request = require('request');
 
-request.post( {
-  url: 'https://v61265.com/restaurants',
-  form: {
-    name //新餐廳名稱
+request.post(
+  {
+    url: 'https://v61265.com/restaurants',
+    form: {
+      name, //新餐廳名稱
+    },
   },
-}, (err, res, body) => {
-  //這裡是你想要的內容
-});
+  (err, res, body) => {
+    //這裡是你想要的內容
+  }
+);
 ```
 
 ## 刪除餐廳
 
-```
+```js
 const request = require('request');
 
 request.delete(`https://v61265.com/restaurants/${id}`, (err, res, body) => {
@@ -570,15 +581,18 @@ request.delete(`https://v61265.com/restaurants/${id}`, (err, res, body) => {
 
 ## 更改餐廳資訊
 
-```
+```js
 const request = require('request');
 
-request.patch( {
-  url: `https://v61265.com/restaurants/${id}`,
-  form: { name }
-}, (err,res,body) => {
-  //可以加其他東西
-});
+request.patch(
+  {
+    url: `https://v61265.com/restaurants/${id}`,
+    form: { name },
+  },
+  (err, res, body) => {
+    //可以加其他東西
+  }
+);
 ```
 
 最後附上有時間可以回頭看的： [[原來後端要知道] 如何寫 API 文件？ #Apiary #API Blueprint # Markdown](https://ithelp.ithome.com.tw/articles/10230804)
