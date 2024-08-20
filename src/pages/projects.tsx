@@ -31,6 +31,7 @@ interface ProjectQueryResult {
 
 const Projects = ({ data }: PageProps<ProjectQueryResult>) => {
   const projectsData = data?.allProject?.nodes;
+  console.log(data?.allProject?.nodes);
 
   const blocksInfo = [
     {
@@ -70,7 +71,7 @@ const Projects = ({ data }: PageProps<ProjectQueryResult>) => {
                     logo={project.logo}
                     codeLink={project.codeLink}
                     isImageRight={index % 2 !== 0}
-                    demoLink={''}
+                    demoLink={project.demoLink}
                   />
                 ))}
             </ProjectsList>

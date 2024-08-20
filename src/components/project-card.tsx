@@ -1,7 +1,8 @@
-import { log } from 'console';
 import * as React from 'react';
 import styled from 'styled-components';
 import { useThemeUI, useColorMode } from 'theme-ui';
+import WebIcon from './web-icon';
+import GithubIcon from './github-icon';
 
 const CardWrapper = styled.div`
   position: relative;
@@ -37,7 +38,7 @@ const CardWrapper = styled.div`
   }
 `;
 
-const ImageWrapper = styled.div<{ colormode: string; islogo: boolean }>`
+const ImageWrapper = styled.div<{ colormode: string; islogo: string }>`
   width: 100%;
   height: 0;
   padding-top: 56%;
@@ -66,7 +67,7 @@ const ImageWrapper = styled.div<{ colormode: string; islogo: boolean }>`
     margin-top: 20px;
     padding-top: 0;
     background: ${({ colormode, islogo }) => {
-      if (!islogo) return '';
+      if (islogo !== 'true') return '';
       return colormode === 'dark'
         ? 'var(--theme-ui-colors-gray-8)'
         : 'var(--theme-ui-colors-gray-1)';
@@ -82,8 +83,38 @@ const InfoWrapper = styled.div`
   }
 `;
 
+const TitleAndIcons = styled.div`
+  gap: 10px;
+`;
+
 const StyledTitle = styled.h3`
   font-size: 200%;
+  margin-top: 16px;
+`;
+
+const IconsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  margin-bottom: 16px;
+
+  a {
+    height: 20px;
+    :hover {
+      cursor: pointer;
+      path {
+        fill: var(--theme-ui-colors-gray-6);
+      }
+    }
+  }
+  svg {
+    width: 20px;
+    height: 20px;
+
+    }
+  }
+
 `;
 
 const Desc = styled.li`
@@ -141,16 +172,17 @@ export default function ProjectCard({
   description,
   banner,
   skills,
+  demoLink,
   codeLink,
-  isImageRight,
   logo,
 }: ProjectCardProps) {
   const { theme } = useThemeUI();
   const [colorMode, _] = useColorMode();
   const projectBanner = banner ?? '/default-project.webp';
+  console.log(title);
   return (
     <CardWrapper>
-      <ImageWrapper colormode={colorMode} islogo={!!logo}>
+      <ImageWrapper colormode={colorMode} islogo={logo ? 'true' : 'false'}>
         {logo ? (
           <img src={logo} alt={title} className='logo' />
         ) : (
@@ -158,7 +190,22 @@ export default function ProjectCard({
         )}
       </ImageWrapper>
       <InfoWrapper theme={theme}>
-        <StyledTitle>{title}</StyledTitle>
+        <TitleAndIcons>
+          <IconsWrapper>
+            {demoLink && (
+              <a href={demoLink} target='_blank'>
+                <WebIcon />
+              </a>
+            )}
+            {codeLink && (
+              <a href={codeLink} target='_blank'>
+                <GithubIcon />
+              </a>
+            )}
+          </IconsWrapper>
+          <StyledTitle>{title}</StyledTitle>
+        </TitleAndIcons>
+
         {description?.map((destItem) => (
           <Desc key={destItem}>{destItem}</Desc>
         ))}
