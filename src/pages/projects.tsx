@@ -31,7 +31,6 @@ interface ProjectQueryResult {
 
 const Projects = ({ data }: PageProps<ProjectQueryResult>) => {
   const projectsData = data?.allProject?.nodes;
-  console.log(data?.allProject?.nodes);
 
   const blocksInfo = [
     {
@@ -103,8 +102,8 @@ export const query = graphql`
 
 export const Head = () => (
   <Seo
-    title='Projects | 坑坑洞洞'
-    description='作品集'
+    title='Projects'
+    description='生菜的網站作品集'
     image='/default-project.webp'
     pathname='projects'
   />

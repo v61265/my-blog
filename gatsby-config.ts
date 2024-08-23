@@ -1,4 +1,5 @@
 import type { GatsbyConfig, PluginRef } from 'gatsby';
+import { ORIGINAL_URL } from './consts/index.js';
 import 'dotenv/config';
 
 const shouldAnalyseBundle = process.env.ANALYSE_BUNDLE;
@@ -12,9 +13,9 @@ const config: GatsbyConfig = {
     siteTitle: `坑坑洞洞`,
     siteTitleAlt: `坑坑洞洞`,
     siteHeadline: `坑坑洞洞`,
-    siteUrl: `https://v61265.github.io/myBlog/blog`,
+    siteUrl: `https://v61265.github.io/myBlog/`,
     siteDescription: `生菜的個人部落格，包含一些 coding 與其以外的一切坑與腦洞。`,
-    siteImage: `/banner.webp`,
+    siteImage: `${ORIGINAL_URL}/banner.webp`,
     siteLanguage: `ch`,
     author: `v61265`,
   },
@@ -66,7 +67,7 @@ const config: GatsbyConfig = {
         display: `standalone`,
         icons: [
           {
-            src: `/favicon.ico`,
+            src: `${ORIGINAL_URL}/favicon.ico`,
             sizes: `128x128`,
             type: `image/ico`,
           },
