@@ -43,11 +43,6 @@ const Projects = ({ data }: PageProps<ProjectQueryResult>) => {
       title: '互動式專題',
       desc: '與記者及設計師共同合作，推出具有互動性的專題報導，以更具互動性的方式呈現長篇、難以理解的議題或具時效性的資料給讀者。參與製作 4 篇的專題，在專題製作完畢後，也會紀錄心得及過程，並與團隊同仁分享開發與使用新技術的心得。',
     },
-    {
-      type: 'side-project',
-      title: 'Side Project',
-      desc: '在自學前端的過程中，我也與其他團隊的成員合作，共同製作 Side project，除了磨練技術以外，也希望專案可為對特定議題帶來影響力。',
-    },
   ];
 
   return (

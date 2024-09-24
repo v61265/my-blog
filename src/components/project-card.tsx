@@ -3,6 +3,10 @@ import styled from 'styled-components';
 import { useThemeUI, useColorMode } from 'theme-ui';
 import WebIcon from './web-icon';
 import GithubIcon from './github-icon';
+import dynamic from 'next/dynamic';
+const CardImage = dynamic(() => import('./card-image'), {
+  ssr: false,
+});
 
 const CardWrapper = styled.div`
   position: relative;
@@ -35,84 +39,6 @@ const CardWrapper = styled.div`
     10% {
       transform: translate(calc(-50% - 1px), -2px) rotate(-1deg);
     }
-  }
-`;
-
-const ImageWrapperDiv = styled.div<{ colormode: string; islogo: string }>`
-  display: block;
-  width: 100%;
-  height: 0;
-  padding-top: 56%;
-  overflow: hidden;
-  position: relative;
-  margin-top: 20px;
-  img {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    height: 100%;
-    object-fit: contain;
-    filter: grayscale(100%);
-    transform: translate(-50%, 0);
-    max-width: 100%;
-    max-height: 100%;
-  }
-  .logo {
-    width: 50%;
-  }
-  @media (min-width: 768px) {
-    min-width: 256px;
-    width: 256px;
-    margin-top: 0;
-    height: auto;
-    margin-top: 20px;
-    padding-top: 0;
-    background: ${({ colormode, islogo }) => {
-      if (islogo == 'true')
-        return colormode === 'dark'
-          ? 'var(--theme-ui-colors-gray-8)'
-          : 'var(--theme-ui-colors-gray-1)';
-    }};
-    border-radius: 4px;
-  }
-`;
-
-const ImageWrapper = styled.a<{ colormode: string; islogo: string }>`
-  display: block;
-  width: 100%;
-  height: 0;
-  padding-top: 56%;
-  overflow: hidden;
-  position: relative;
-  margin-top: 20px;
-  img {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    height: 100%;
-    object-fit: contain;
-    filter: grayscale(100%);
-    transform: translate(-50%, 0);
-    max-width: 100%;
-    max-height: 100%;
-  }
-  .logo {
-    width: 50%;
-  }
-  @media (min-width: 768px) {
-    min-width: 256px;
-    width: 256px;
-    margin-top: 0;
-    height: auto;
-    margin-top: 20px;
-    padding-top: 0;
-    background: ${({ colormode, islogo }) => {
-      if (islogo == 'true')
-        return colormode === 'dark'
-          ? 'var(--theme-ui-colors-gray-8)'
-          : 'var(--theme-ui-colors-gray-1)';
-    }};
-    border-radius: 4px;
   }
 `;
 
@@ -221,27 +147,13 @@ export default function ProjectCard({
   const projectBanner = banner ?? '/default-project.webp';
   return (
     <CardWrapper>
-      {demoLink ? (
-        <ImageWrapper
-          colormode={colorMode}
-          islogo={logo ? 'true' : 'false'}
-          href={demoLink}
-          target='_blank'
-        >
-          {logo ? (
-            <img src={logo} alt={title} className='logo' />
-          ) : (
-            <img src={projectBanner} alt={title} className='banner' />
-          )}
-        </ImageWrapper>
-      ) : (
-        <ImageWrapperDiv colormode={colorMode} islogo={logo ? 'true' : 'false'}>
-          {logo ? (
-            <img src={logo} alt={title} className='logo' />
-          ) : (
-            <img src={projectBanner} alt={title} className='banner' />
-          )}
-        </ImageWrapperDiv>
+      {demoLink && (
+        <CardImage
+          demoLink={demoLink}
+          logo={logo}
+          title='title'
+          banner={projectBanner}
+        />
       )}
 
       <InfoWrapper theme={theme}>
